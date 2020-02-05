@@ -16,14 +16,16 @@ public class EventRouterTest {
     @Test
     public void testCallbackRegistration() {
 
+        final EventRouter router = new EventRouter();
+
         // For evaluation
         final AtomicInteger callCount = new AtomicInteger();
 
         // given - user adds a single callback for the ButtonCLickEvent
-        EventRouter.on(ButtonClickEvent.class, event -> callCount.getAndIncrement());
+        router.on(ButtonClickEvent.class, event -> callCount.getAndIncrement());
 
         // when - user triggers a new ButtonClickEvent
-        EventRouter.trigger(new ButtonClickEvent());
+        router.trigger(new ButtonClickEvent());
 
         // then - we assume the callback has been triggered 1 times
         Assert.assertEquals(1, callCount.get());
@@ -33,14 +35,16 @@ public class EventRouterTest {
     @Test
     public void testCallbackUnregistration() {
 
+        final EventRouter router = new EventRouter();
+
         // For evaluation
         final AtomicInteger callCount = new AtomicInteger(0);
 
         // given - user adds a single callback for the ButtonCLickEvent
-        Registration buttonClickRegistry = EventRouter.on(ButtonClickEvent.class, event -> callCount.getAndIncrement());
+        Registration buttonClickRegistry = router.on(ButtonClickEvent.class, event -> callCount.getAndIncrement());
 
         // when - user triggers a new ButtonClickEvent
-        EventRouter.trigger(new ButtonClickEvent());
+        router.trigger(new ButtonClickEvent());
 
         // then - we assume the callback has been triggered 1 times
         Assert.assertEquals(1, callCount.get());
@@ -49,7 +53,7 @@ public class EventRouterTest {
         buttonClickRegistry.unregister();
 
         // when - user triggers a new ButtonClickEvent
-        EventRouter.trigger(new ButtonClickEvent());
+        router.trigger(new ButtonClickEvent());
 
         // then - we still assume the callback counter to be 1
         Assert.assertEquals(1, callCount.get());
@@ -59,25 +63,26 @@ public class EventRouterTest {
     @Test
     public void testMultipleEventTypes() {
 
+        final EventRouter router = new EventRouter();
         final AtomicInteger buttonClickCallCount = new AtomicInteger(0);
         final AtomicInteger loginCallCount = new AtomicInteger(0);
 
         // given
-        EventRouter.on(ButtonClickEvent.class, event -> buttonClickCallCount.getAndIncrement());
-        EventRouter.on(LoginEvent.class, event -> loginCallCount.getAndIncrement());
+        router.on(ButtonClickEvent.class, event -> buttonClickCallCount.getAndIncrement());
+        router.on(LoginEvent.class, event -> loginCallCount.getAndIncrement());
 
         // when
-        EventRouter.trigger(new ButtonClickEvent());
-        EventRouter.trigger(new ButtonClickEvent());
-        EventRouter.trigger(new ButtonClickEvent());
-        EventRouter.trigger(new ButtonClickEvent());
-        EventRouter.trigger(new ButtonClickEvent());
-        EventRouter.trigger(new ButtonClickEvent());
+        router.trigger(new ButtonClickEvent());
+        router.trigger(new ButtonClickEvent());
+        router.trigger(new ButtonClickEvent());
+        router.trigger(new ButtonClickEvent());
+        router.trigger(new ButtonClickEvent());
+        router.trigger(new ButtonClickEvent());
 
-        EventRouter.trigger(new LoginEvent());
-        EventRouter.trigger(new LoginEvent());
-        EventRouter.trigger(new LoginEvent());
-        EventRouter.trigger(new LoginEvent());
+        router.trigger(new LoginEvent());
+        router.trigger(new LoginEvent());
+        router.trigger(new LoginEvent());
+        router.trigger(new LoginEvent());
 
         // then
         Assert.assertEquals(6, buttonClickCallCount.get());
@@ -88,44 +93,54 @@ public class EventRouterTest {
     @Test
     public void testEventParameters() {
 
+        final EventRouter router = new EventRouter();
+
         // given & then
-        EventRouter.on(LoginEvent.class, Assert::assertNotNull);
-        EventRouter.on(LoginEvent.class, event -> Assert.assertEquals("sarah", event.getUserId()));
+        router.on(LoginEvent.class, Assert::assertNotNull);
+        router.on(LoginEvent.class, event -> Assert.assertEquals("sarah", event.getUserId()));
 
         // when
-        EventRouter.trigger(new LoginEvent("sarah"));
+        router.trigger(new LoginEvent("sarah"));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testNullParameter() {
-        EventRouter.trigger(null);
+        new EventRouter().trigger(null);
     }
 
     @Test
     public void testInheritedSubEvent() {
+
+        final EventRouter router = new EventRouter();
 
         // for evaluation
         final AtomicInteger buttonClickCallCount = new AtomicInteger(0);
         final AtomicInteger menuButtonClickCallCount = new AtomicInteger(0);
 
         // given
-        EventRouter.on(ButtonClickEvent.class, event -> buttonClickCallCount.getAndIncrement());
-        EventRouter.on(MenuButtonClickEvent.class, event -> menuButtonClickCallCount.getAndIncrement());
+        router.on(ButtonClickEvent.class, event -> buttonClickCallCount.getAndIncrement());
+        router.on(MenuButtonClickEvent.class, event -> menuButtonClickCallCount.getAndIncrement());
 
         // when
-        EventRouter.trigger(new ButtonClickEvent());
+        router.trigger(new ButtonClickEvent());
 
         // then
         Assert.assertEquals(1, buttonClickCallCount.get());
         Assert.assertEquals(0, menuButtonClickCallCount.get());
 
         // when
-        EventRouter.trigger(new MenuButtonClickEvent());
-        EventRouter.trigger(new MenuButtonClickEvent());
+        router.trigger(new MenuButtonClickEvent());
+        router.trigger(new MenuButtonClickEvent());
 
         // then
         Assert.assertEquals(1, buttonClickCallCount.get());
         Assert.assertEquals(2, menuButtonClickCallCount.get());
 
+    }
+
+    @Test
+    public void testNotRegisteredEvent() {
+        final EventRouter router = new EventRouter();
+        router.trigger(new LoginEvent());
     }
 }
