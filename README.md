@@ -12,21 +12,22 @@ well with larger projects too .
 Simple. It is really really easy to use:
 
 ```java
-EventRouter.on(MyEventType.class, event -> doSomething());
-EventRouter.trigger(new MyEventType());
+final EventRouter eventRouter = new EventRouter();
+eventrouter.on(MyEventType.class, event -> doSomething());
+eventRouter.trigger(new MyEventType());
 ```
 
 done.
 
 
-The above code sample adds a `Callback<MyEventType>` to the `EventRouter` and triggers it afterwards. Since you can add
+The above code sample adds a `Callback<MyEventType>` to the `eventRouter` and triggers it afterwards. Since you can add
 `Callback`s and trigger `Event`s from anywhere in your codebase it makes it pretty easy to couple several components or
 even modules with this mechanism.
 
 ## How?
-You simply create sub-classes from `at.downdrown.eventrouter.core.Event` to mark your events. After that you are ready
-to observe and trigger those events. The static method `EventRouter#on` returns you a `Registration` which lets you
-unregister the `Callback` easily using the `Registration#unregister` method.
+You simply instantiate a `EventRouter` and keep this instance for as long as the bus should be alive. The  method 
+`EventRouter#on` returns you a `Registration` which lets you unregister the `Callback` easily using the 
+`Registration#unregister` method.
 
 If you have a closer look at the `EventRouter#on` method, you'll see that the first parameter is the type, or to be more
 specific, the class of the event you want to observe. The second parameter is the `Callback` which get's triggered when
