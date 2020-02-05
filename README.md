@@ -13,7 +13,7 @@ Simple. It is really really easy to use:
 
 ```java
 final EventRouter eventRouter = new EventRouter();
-eventrouter.on(MyEventType.class, event -> doSomething());
+eventRouter.on(MyEventType.class, event -> doSomething());
 eventRouter.trigger(new MyEventType());
 ```
 
