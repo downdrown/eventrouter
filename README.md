@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/downdrown/eventrouter.svg?branch=master)](https://travis-ci.com/downdrown/eventrouter)
+
 # EventRouter
 Tiny, lightweight eventing engine.
 
