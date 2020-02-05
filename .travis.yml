@@ -1,10 +1,5 @@
+os: linux
 language: java
-os:
-  - linux # build on linux env
-jdk:
-  - oraclejdk8 # use Java 8
-
-# cache the build tool's caches
 cache:
   directories:
     - $HOME/.m2
