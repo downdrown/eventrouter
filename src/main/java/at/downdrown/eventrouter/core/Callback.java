@@ -8,11 +8,11 @@ package at.downdrown.eventrouter.core;
  * @since 1.0.0
  */
 @FunctionalInterface
-public interface Callback<T extends Event> {
+public interface Callback<T> {
 
     /**
      * Trigger this callback.
-     * @param event the payload, defined as subtype of {@link Event}.
+     * @param event the payload
      */
     void trigger(T event);
 
